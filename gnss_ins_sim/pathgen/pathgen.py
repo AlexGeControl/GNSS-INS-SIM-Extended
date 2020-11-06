@@ -507,7 +507,7 @@ def acc_gen(fs, ref_a, acc_err, vib_def=None):
         ]
     )
     # scaled + constant_bias + bias_drift + noise
-    scaled_a = np.dot(scale_factor, ref_a)
+    scaled_a = np.dot(ref_a, scale_factor.T)
     a_mea = scaled_a + acc_bias + acc_bias_drift + acc_noise + acc_vib
     
     return a_mea
@@ -549,7 +549,7 @@ def gyro_gen(fs, ref_w, gyro_err):
         ]
     )
     # scaled + constant_bias + bias_drift + noise
-    scaled_w = np.dot(scale_factor, ref_w)
+    scaled_w = np.dot(ref_w, scale_factor.T)
     w_mea = scaled_w + gyro_bias + gyro_bias_drift + gyro_noise
 
     return w_mea
