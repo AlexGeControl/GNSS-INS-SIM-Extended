@@ -15,50 +15,96 @@ D2R = math.pi/180
 ## default IMU, magnetometer and GPS error profiles.
 # low accuracy, from AHRS380
 #http://www.memsic.cn/userfiles/files/Datasheets/Inertial-System-Datasheets/AHRS380SA_Datasheet.pdf
-gyro_low_accuracy = {'b': np.array([0.0, 0.0, 0.0]) * D2R,
-                     'b_drift': np.array([10.0, 10.0, 10.0]) * D2R/3600.0,
-                     'b_corr':np.array([100.0, 100.0, 100.0]),
-                     'arw': np.array([0.75, 0.75, 0.75]) * D2R/60.0}
-accel_low_accuracy = {'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
-                      'b_drift': np.array([2.0e-4, 2.0e-4, 2.0e-4]),
-                      'b_corr': np.array([100.0, 100.0, 100.0]),
-                      'vrw': np.array([0.05, 0.05, 0.05]) / 60.0}
-mag_low_accuracy = {'si': np.eye(3) + np.random.randn(3, 3)*0.0,
-                    'hi': np.array([10.0, 10.0, 10.0])*0.0,
-                    'std': np.array([0.1, 0.1, 0.1])}
+gyro_low_accuracy = {
+    'b': np.array([0.0, 0.0, 0.0]) * D2R,
+    'b_drift': np.array([10.0, 10.0, 10.0]) * D2R/3600.0,
+    'b_corr':np.array([100.0, 100.0, 100.0]),
+    'arw': np.array([0.75, 0.75, 0.75]) * D2R/60.0,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
+
+accel_low_accuracy = {
+    'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
+    'b_drift': np.array([2.0e-4, 2.0e-4, 2.0e-4]),
+    'b_corr': np.array([100.0, 100.0, 100.0]),
+    'vrw': np.array([0.05, 0.05, 0.05]) / 60.0,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
+
+mag_low_accuracy = {
+    'si': np.eye(3) + np.random.randn(3, 3)*0.0,
+    'hi': np.array([10.0, 10.0, 10.0])*0.0,
+    'std': np.array([0.1, 0.1, 0.1])
+}
 # mid accuracy, partly from IMU381
-gyro_mid_accuracy = {'b': np.array([0.0, 0.0, 0.0]) * D2R,
-                     'b_drift': np.array([3.5, 3.5, 3.5]) * D2R/3600.0,
-                     'b_corr':np.array([100.0, 100.0, 100.0]),
-                     'arw': np.array([0.25, 0.25, 0.25]) * D2R/60}
-accel_mid_accuracy = {'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
-                      'b_drift': np.array([5.0e-5, 5.0e-5, 5.0e-5]),
-                      'b_corr': np.array([100.0, 100.0, 100.0]),
-                      'vrw': np.array([0.03, 0.03, 0.03]) / 60}
-mag_mid_accuracy = {'si': np.eye(3) + np.random.randn(3, 3)*0.0,
-                    'hi': np.array([10.0, 10.0, 10.0])*0.0,
-                    'std': np.array([0.01, 0.01, 0.01])}
+gyro_mid_accuracy = {
+    'b': np.array([0.0, 0.0, 0.0]) * D2R,
+    'b_drift': np.array([3.5, 3.5, 3.5]) * D2R/3600.0,
+    'b_corr':np.array([100.0, 100.0, 100.0]),
+    'arw': np.array([0.25, 0.25, 0.25]) * D2R/60,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
+
+accel_mid_accuracy = {
+    'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
+    'b_drift': np.array([5.0e-5, 5.0e-5, 5.0e-5]),
+    'b_corr': np.array([100.0, 100.0, 100.0]),
+    'vrw': np.array([0.03, 0.03, 0.03]) / 60,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
+
+mag_mid_accuracy = {
+    'si': np.eye(3) + np.random.randn(3, 3)*0.0,
+    'hi': np.array([10.0, 10.0, 10.0])*0.0,
+    'std': np.array([0.01, 0.01, 0.01])
+}
 # high accuracy, partly from HG9900, partly from
 # http://www.dtic.mil/get-tr-doc/pdf?AD=ADA581016
-gyro_high_accuracy = {'b': np.array([0.0, 0.0, 0.0]) * D2R,
-                      'b_drift': np.array([0.1, 0.1, 0.1]) * D2R/3600.0,
-                      'b_corr':np.array([100.0, 100.0, 100.0]),
-                      'arw': np.array([2.0e-3, 2.0e-3, 2.0e-3]) * D2R/60}
-accel_high_accuracy = {'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
-                       'b_drift': np.array([3.6e-6, 3.6e-6, 3.6e-6]),
-                       'b_corr': np.array([100.0, 100.0, 100.0]),
-                       'vrw': np.array([2.5e-5, 2.5e-5, 2.5e-5]) / 60}
-mag_high_accuracy = {'si': np.eye(3) + np.random.randn(3, 3)*0.0,
-                     'hi': np.array([10.0, 10.0, 10.0])*0.0,
-                     'std': np.array([0.001, 0.001, 0.001])}
+gyro_high_accuracy = {
+    'b': np.array([0.0, 0.0, 0.0]) * D2R,
+    'b_drift': np.array([0.1, 0.1, 0.1]) * D2R/3600.0,
+    'b_corr':np.array([100.0, 100.0, 100.0]),
+    'arw': np.array([2.0e-3, 2.0e-3, 2.0e-3]) * D2R/60,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
 
+accel_high_accuracy = {
+    'b': np.array([0.0e-3, 0.0e-3, 0.0e-3]),
+    'b_drift': np.array([3.6e-6, 3.6e-6, 3.6e-6]),
+    'b_corr': np.array([100.0, 100.0, 100.0]),
+    'vrw': np.array([2.5e-5, 2.5e-5, 2.5e-5]) / 60,
+    # deterministic error:
+    'k': np.array([1.0, 1.0, 1.0]),
+    's': np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+}
+
+mag_high_accuracy = {
+    'si': np.eye(3) + np.random.randn(3, 3)*0.0,
+    'hi': np.array([10.0, 10.0, 10.0])*0.0,
+    'std': np.array([0.001, 0.001, 0.001])
+}
 ## built-in GPS error profiles
-gps_low_accuracy = {'stdp': np.array([5.0, 5.0, 7.0]),
-                    'stdv': np.array([0.05, 0.05, 0.05])}
+gps_low_accuracy = {
+    'stdp': np.array([5.0, 5.0, 7.0]),
+    'stdv': np.array([0.05, 0.05, 0.05])
+}
 
 ## built-in odometer error profiles
-odo_low_accuracy = {'scale': 0.99,
-                    'stdv': 0.1}
+odo_low_accuracy = {
+    'scale': 0.99,
+    'stdv': 0.1
+}
+
 class IMU(object):
     '''
     IMU class
@@ -107,7 +153,7 @@ class IMU(object):
             raise ValueError('axis should be either 6 or 9.')
 
         # built-in imu error model
-        self.gyro_err = gyro_low_accuracy                   #   default is low accuracy
+        self.gyro_err = gyro_low_accuracy                   #  default is low accuracy
         self.accel_err = accel_low_accuracy
         self.mag_err = mag_low_accuracy
 
@@ -152,10 +198,28 @@ class IMU(object):
                     self.gyro_err['b_corr'] = accuracy['gyro_b_corr']
                 else:
                     self.gyro_err['b_corr'] = np.array([float("inf"), float("inf"), float("inf")])
+                if 'gyro_k' in accuracy:
+                    self.gyro_err['k'] = accuracy['gyro_k']
+                else:
+                    self.gyro_err['k'] = np.array([1.0, 1.0, 1.0])
+                if 'gyro_s' in accuracy:
+                    self.gyro_err['s'] = accuracy['gyro_s']
+                else:
+                    self.gyro_err['s'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
                 if 'accel_b_corr' in accuracy:
                     self.accel_err['b_corr'] = accuracy['accel_b_corr']
                 else:
                     self.accel_err['b_corr'] = np.array([float("inf"), float("inf"), float("inf")])
+                if 'accel_k' in accuracy:
+                    self.accel_err['k'] = accuracy['accel_k']
+                else:
+                    self.accel_err['k'] = np.array([1.0, 1.0, 1.0])
+                if 'accel_s' in accuracy:
+                    self.accel_err['s'] = accuracy['accel_s']
+                else:
+                    self.accel_err['s'] = np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+
                 if 'mag_si' in accuracy:
                     self.mag_err['si'] = accuracy['mag_si']
                 else:

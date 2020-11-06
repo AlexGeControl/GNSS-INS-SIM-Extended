@@ -496,8 +496,20 @@ def acc_gen(fs, ref_a, acc_err, vib_def=None):
     acc_noise[:, 0] = acc_err['vrw'][0] / math.sqrt(dt) * acc_noise[:, 0]
     acc_noise[:, 1] = acc_err['vrw'][1] / math.sqrt(dt) * acc_noise[:, 1]
     acc_noise[:, 2] = acc_err['vrw'][2] / math.sqrt(dt) * acc_noise[:, 2]
-    # true + constant_bias + bias_drift + noise
-    a_mea = ref_a + acc_bias + acc_bias_drift + acc_noise + acc_vib
+    # create scale factor matrix:
+    kx, ky, kz = acc_err['k']
+    sxy, sxz, syx, syz, szx, szy = acc_err['s']
+    scale_factor = np.array(
+        [
+            [ kx, sxy, sxz], 
+            [syx,  ky, syz], 
+            [szx, szy,  kz]
+        ]
+    )
+    # scaled + constant_bias + bias_drift + noise
+    scaled_a = np.dot(scale_factor, ref_a)
+    a_mea = scaled_a + acc_bias + acc_bias_drift + acc_noise + acc_vib
+    
     return a_mea
 
 def gyro_gen(fs, ref_w, gyro_err):
@@ -526,8 +538,20 @@ def gyro_gen(fs, ref_w, gyro_err):
     gyro_noise[:, 0] = gyro_err['arw'][0] / math.sqrt(dt) * gyro_noise[:, 0]
     gyro_noise[:, 1] = gyro_err['arw'][1] / math.sqrt(dt) * gyro_noise[:, 1]
     gyro_noise[:, 2] = gyro_err['arw'][2] / math.sqrt(dt) * gyro_noise[:, 2]
-    # true + constant_bias + bias_drift + noise
-    w_mea = ref_w + gyro_bias + gyro_bias_drift + gyro_noise
+    # create scale factor matrix:
+    kx, ky, kz = gyro_err['k']
+    sxy, sxz, syx, syz, szx, szy = gyro_err['s']
+    scale_factor = np.array(
+        [
+            [ kx, sxy, sxz], 
+            [syx,  ky, syz], 
+            [szx, szy,  kz]
+        ]
+    )
+    # scaled + constant_bias + bias_drift + noise
+    scaled_w = np.dot(scale_factor, ref_w)
+    w_mea = scaled_w + gyro_bias + gyro_bias_drift + gyro_noise
+
     return w_mea
 
 def bias_drift(corr_time, drift, n, fs):
